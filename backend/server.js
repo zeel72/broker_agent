@@ -1,8 +1,10 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const path = require('path');
 const connectDB = require('./config/db');
 const propertyRoutes = require('./routes/propertyRoutes');
+const uploadRoutes = require('./routes/uploadRoutes');
 
 dotenv.config();
 
@@ -28,6 +30,10 @@ app.post('/api/login', (req, res) => {
 
 // Routes
 app.use('/api/properties', propertyRoutes);
+app.use('/api/upload', uploadRoutes);
+
+// Make uploads folder static
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.get('/', (req, res) => {
   res.send('API is running...');

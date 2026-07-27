@@ -4,7 +4,7 @@ import Button from '../ui/Button';
 import { Plus, LogOut, Home } from 'lucide-react';
 import './Layout.css';
 
-const Layout = ({ children, onAddNew, filters, onFilterChange, stats, uniqueAreas = [] }) => {
+const Layout = ({ children, onAddNew, onDownloadPDF, filters, onFilterChange, stats, uniqueAreas = [] }) => {
   const { logOut } = useAuth();
 
   return (
@@ -38,6 +38,15 @@ const Layout = ({ children, onAddNew, filters, onFilterChange, stats, uniqueArea
 
           {/* Actions */}
           <div className="header-actions">
+            {onDownloadPDF && (
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={onDownloadPDF}
+              >
+                Download PDF
+              </Button>
+            )}
             <Button
               variant="primary"
               size="sm"

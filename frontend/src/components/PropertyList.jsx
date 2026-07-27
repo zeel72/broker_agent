@@ -61,7 +61,14 @@ const PropertyList = ({ properties, onEdit, onDelete, loading }) => {
               return (
                 <tr key={p._id} className="prop-row">
                   <td>
-                    <div className="prop-title">{p.title}</div>
+                    <div className="prop-title">
+                      {p.title}
+                      {p.photos && p.photos.length > 0 && (
+                        <span style={{ fontSize: '12px', marginLeft: '6px', color: '#666' }} title={`${p.photos.length} photos`}>
+                          📷 {p.photos.length}
+                        </span>
+                      )}
+                    </div>
                     {p.notes && <div className="prop-notes">{p.notes}</div>}
                   </td>
                   <td>
@@ -145,7 +152,14 @@ const PropertyList = ({ properties, onEdit, onDelete, loading }) => {
             >
               <div className="mobile-card-header">
                 <div className="mobile-card-meta">
-                  <div className="prop-title">{p.title}</div>
+                  <div className="prop-title">
+                    {p.title}
+                    {p.photos && p.photos.length > 0 && (
+                      <span style={{ fontSize: '12px', marginLeft: '6px', color: '#666' }}>
+                        📷 {p.photos.length}
+                      </span>
+                    )}
+                  </div>
                   <div className="prop-area">
                     <MapPin size={12} /> {p.area}
                   </div>

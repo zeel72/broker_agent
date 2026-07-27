@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import Layout from '../components/Layout/Layout';
 import PropertyList from '../components/PropertyList';
 import PropertyForm from '../components/PropertyForm';
@@ -85,9 +87,47 @@ const DashboardPage = () => {
     fetchProperties();
   };
 
+  const handleDownloadPDF = () => {
+    try {
+      const doc = new jsPDF();
+      doc.text('BrokerDesk - Property Report', 14, 15);
+      
+      const tableColumn = ["Title", "Type", "Area", "Price (Rs)", "Status", "Owner"];
+      const tableRows = [];
+
+      filtered.forEach(p => {
+        const pType = p.type === 'plot' ? 'Plot' : p.type === 'flat_sale' ? 'Flat (Sale)' : 'Rent';
+        const priceStr = p.price ? p.price.toLocaleString('en-IN') : 'N/A';
+        const propertyData = [
+          p.title || 'N/A',
+          pType,
+          p.area || 'N/A',
+          priceStr,
+          p.status || 'N/A',
+          `${p.owner_name || ''}\n${p.owner_contact || ''}`,
+        ];
+        tableRows.push(propertyData);
+      });
+
+      autoTable(doc, {
+        head: [tableColumn],
+        body: tableRows,
+        startY: 20,
+        styles: { fontSize: 9 },
+        headStyles: { fillColor: [41, 128, 185] },
+      });
+
+      doc.save('property_report.pdf');
+    } catch (error) {
+      console.error("PDF generation failed:", error);
+      toast.error('Failed to generate PDF');
+    }
+  };
+
   return (
     <Layout
       onAddNew={handleAddNew}
+      onDownloadPDF={handleDownloadPDF}
       filters={filters}
       onFilterChange={handleFilterChange}
       stats={stats}

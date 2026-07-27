@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Input from './ui/Input';
 import Select from './ui/Select';
 import Button from './ui/Button';
-import { createProperty, updateProperty } from '../services/api';
+import { createProperty, updateProperty, uploadPhotos } from '../services/api';
 import toast from 'react-hot-toast';
 import './PropertyForm.css';
 
@@ -57,6 +57,12 @@ const defaultForm = {
   bhk: '',
   furnishing: '',
   floor: '',
+  photos: [],
+};
+
+const getPhotoUrl = (path) => {
+  const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5001/api').replace('/api', '');
+  return `${baseUrl}${path}`;
 };
 
 const PropertyForm = ({ onSuccess, existingData }) => {
@@ -72,9 +78,34 @@ const PropertyForm = ({ onSuccess, existingData }) => {
       : defaultForm
   );
   const [loading, setLoading] = useState(false);
+  const [selectedFiles, setSelectedFiles] = useState([]);
 
   const set = (field) => (e) =>
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
+
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setSelectedFiles(prev => [...prev, ...Array.from(e.target.files)]);
+    }
+    // reset the input value so the same file can be picked again if needed
+    e.target.value = '';
+  };
+
+  const removeSelectedFile = (index) => {
+    setSelectedFiles(prev => {
+      const newFiles = [...prev];
+      newFiles.splice(index, 1);
+      return newFiles;
+    });
+  };
+
+  const removePhoto = (index) => {
+    setForm(prev => {
+      const newPhotos = [...(prev.photos || [])];
+      newPhotos.splice(index, 1);
+      return { ...prev, photos: newPhotos };
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -96,6 +127,22 @@ const PropertyForm = ({ onSuccess, existingData }) => {
       };
     }
 
+    let uploadedPhotos = form.photos || [];
+    if (selectedFiles.length > 0) {
+      const formData = new FormData();
+      selectedFiles.forEach(file => {
+        formData.append('images', file);
+      });
+      try {
+        const { data: paths } = await uploadPhotos(formData);
+        uploadedPhotos = [...uploadedPhotos, ...paths];
+      } catch (err) {
+        toast.error('Failed to upload photos');
+        setLoading(false);
+        return;
+      }
+    }
+
     const payload = {
       type: form.type,
       title: form.title,
@@ -106,6 +153,7 @@ const PropertyForm = ({ onSuccess, existingData }) => {
       owner_contact: form.owner_contact,
       notes: form.notes,
       specific_details,
+      photos: uploadedPhotos,
     };
 
     try {
@@ -258,6 +306,89 @@ const PropertyForm = ({ onSuccess, existingData }) => {
           onChange={set('owner_contact')}
           required
         />
+      </div>
+
+      {/* Photos */}
+      <div className="form-divider"><span>📷 Photos</span></div>
+      <div className="form-group">
+        <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
+          <div style={{ flex: 1 }}>
+            <label 
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '12px',
+                background: 'var(--surface)',
+                border: '1px dashed var(--border)',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontSize: '13px',
+                fontWeight: '500',
+                textAlign: 'center',
+                transition: 'all 0.2s',
+              }}
+            >
+              🖼️ Upload from Gallery
+              <input 
+                type="file" 
+                multiple 
+                accept="image/*"
+                onChange={handleFileChange}
+                style={{ display: 'none' }}
+              />
+            </label>
+          </div>
+          <div style={{ flex: 1 }}>
+            <label 
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '12px',
+                background: 'rgba(59, 130, 246, 0.05)',
+                border: '1px dashed rgba(59, 130, 246, 0.5)',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontSize: '13px',
+                fontWeight: '500',
+                color: 'var(--primary)',
+                textAlign: 'center',
+                transition: 'all 0.2s',
+              }}
+            >
+              📷 Take Photo
+              <input 
+                type="file" 
+                accept="image/*"
+                capture="environment"
+                onChange={handleFileChange}
+                style={{ display: 'none' }}
+              />
+            </label>
+          </div>
+        </div>
+
+        {((form.photos && form.photos.length > 0) || selectedFiles.length > 0) && (
+          <div className="photo-preview-grid">
+            {/* Existing uploaded photos */}
+            {form.photos && form.photos.map((photo, i) => (
+              <div key={`existing-${i}`} className="photo-preview-item">
+                <img src={getPhotoUrl(photo)} alt="Property" />
+                <button type="button" onClick={() => removePhoto(i)} className="remove-photo-btn">×</button>
+              </div>
+            ))}
+            
+            {/* Newly selected photos (not yet uploaded) */}
+            {selectedFiles.map((file, i) => (
+              <div key={`new-${i}`} className="photo-preview-item">
+                <img src={URL.createObjectURL(file)} alt="New Property" />
+                <button type="button" onClick={() => removeSelectedFile(i)} className="remove-photo-btn" style={{ background: '#f59e0b' }}>×</button>
+                <div style={{ position: 'absolute', bottom: 0, width: '100%', background: 'rgba(0,0,0,0.5)', color: 'white', fontSize: '10px', textAlign: 'center' }}>New</div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Notes */}

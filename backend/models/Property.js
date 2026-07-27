@@ -43,6 +43,10 @@ const propertySchema = mongoose.Schema(
       type: Object,
       default: {},
     },
+    photos: {
+      type: [String],
+      default: [],
+    },
   },
   {
     timestamps: true,
