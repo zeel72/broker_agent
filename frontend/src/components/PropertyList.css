@@ -136,9 +136,17 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 12px;
-  color: var(--text-secondary);
-  margin-top: 2px;
+  font-size: 13px;
+  color: var(--primary);
+  margin-top: 4px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+.prop-owner-contact:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
 }
 
 /* ── Action Buttons ── */

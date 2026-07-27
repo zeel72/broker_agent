@@ -95,9 +95,9 @@ const PropertyList = ({ properties, onEdit, onDelete, loading }) => {
                   </td>
                   <td>
                     <div className="prop-owner-name">{p.owner_name}</div>
-                    <div className="prop-owner-contact">
+                    <a href={`tel:${p.owner_contact}`} className="prop-owner-contact">
                       <Phone size={12} /> {p.owner_contact}
-                    </div>
+                    </a>
                   </td>
                   <td>
                     <span className={`badge ${STATUS_CLS[p.status] || ''}`}>{p.status}</span>
@@ -157,7 +157,9 @@ const PropertyList = ({ properties, onEdit, onDelete, loading }) => {
               </div>
               <div className="mobile-card-body">
                 <div className="prop-price">₹{Number(p.price).toLocaleString('en-IN')}</div>
-                <div className="prop-owner-contact"><Phone size={13} /> {p.owner_contact}</div>
+                <a href={`tel:${p.owner_contact}`} className="prop-owner-contact">
+                  <Phone size={13} /> {p.owner_contact}
+                </a>
               </div>
               {p.notes && (
                 <div className="mobile-card-notes">📝 {p.notes}</div>

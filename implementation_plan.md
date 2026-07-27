@@ -34,6 +34,18 @@ Based on your specified stack, we will use the **MERN** stack:
 - Connect the frontend components to the backend API.
 - Ensure all CRUD operations and filtering work seamlessly.
 
+### Phase 5: Deployment (Vercel + Render)
+- **Database (MongoDB Atlas)**: Continue using the current MongoDB Atlas cluster. Ensure the Network Access (IP Whitelist) is set to `0.0.0.0/0` (Allow access from anywhere) so Render can connect to it.
+- **Backend Deployment (Render)**: 
+  - Create a new Web Service on Render connected to the GitHub repository.
+  - Set the root directory to `backend`, build command to `npm install`, and start command to `node server.js`.
+  - Add environment variables (`MONGO_URI`, `PORT=5001`, `NODE_ENV=production`).
+- **Frontend Deployment (Vercel)**:
+  - Create a new Project on Vercel connected to the GitHub repository.
+  - Set the framework preset to Vite, and root directory to `frontend`.
+  - Add the environment variable `VITE_API_URL` pointing to the deployed Render backend URL.
+  - Deploy and get the live URL.
+
 ## Verification Plan
 
 ### Manual Verification
