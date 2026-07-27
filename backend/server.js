@@ -19,7 +19,7 @@ app.use(express.json());
 app.post('/api/login', (req, res) => {
   const { username, password } = req.body;
   // In a real app, use environment variables and hashing
-  if (username === 'admin' && password === 'broker123') {
+  if (username === 'kirit' && password === 'kirit@123') {
     res.json({ success: true, token: 'fake-jwt-token' });
   } else {
     res.status(401).json({ message: 'Invalid credentials' });
