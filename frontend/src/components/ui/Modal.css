@@ -1,0 +1,113 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: flex-end; /* Slides up from bottom on mobile */
+  justify-content: center;
+  z-index: 1000;
+  padding: 0;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.modal-content {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0; /* Rounded only on top */
+  box-shadow: var(--shadow-lg), var(--shadow-glow);
+  width: 100%;
+  max-height: 95vh;
+  overflow-y: auto;
+  animation: slideUpMobile 0.3s ease;
+}
+
+@keyframes slideUpMobile {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Sizes — on desktop, center the modal properly */
+@media (min-width: 769px) {
+  .modal-overlay {
+    align-items: center;
+    padding: var(--space-4);
+  }
+  .modal-content {
+    border-radius: var(--radius-xl);
+    animation: slideUpDesktop 0.25s ease;
+    max-height: 90vh;
+  }
+  @keyframes slideUpDesktop {
+    from { opacity: 0; transform: translateY(20px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .modal-sm { max-width: 420px; }
+  .modal-md { max-width: 620px; }
+  .modal-lg { max-width: 820px; }
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-5) var(--space-5);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--bg-surface);
+  z-index: 1;
+}
+
+/* Drag handle indicator on mobile */
+.modal-header::before {
+  content: '';
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 36px;
+  height: 4px;
+  background: var(--border);
+  border-radius: var(--radius-full);
+}
+
+.modal-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.modal-close {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  transition: var(--transition);
+}
+
+.modal-close:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-primary);
+  border-color: var(--border-hover);
+}
+
+.modal-body {
+  padding: var(--space-5);
+}
+
+/* Scrollbar inside modal */
+.modal-content::-webkit-scrollbar { width: 4px; }
+.modal-content::-webkit-scrollbar-track { background: transparent; }
+.modal-content::-webkit-scrollbar-thumb { background: var(--border); border-radius: var(--radius-full); }

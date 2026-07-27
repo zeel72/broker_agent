@@ -1,0 +1,93 @@
+/* Summary Cards */
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.summary-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5) var(--space-6);
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition-slow);
+}
+
+.summary-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.summary-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.summary-card-primary::before { background: var(--primary); }
+.summary-card-available::before { background: var(--status-available); }
+.summary-card-plot::before { background: var(--type-plot); }
+.summary-card-rent::before { background: var(--type-house-rent); }
+
+.summary-card-value {
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: var(--space-1);
+}
+
+.summary-card-primary .summary-card-value { color: var(--primary-light); }
+.summary-card-available .summary-card-value { color: var(--status-available); }
+.summary-card-plot .summary-card-value { color: var(--type-plot); }
+.summary-card-rent .summary-card-value { color: var(--type-house-rent); }
+
+.summary-card-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Result info row */
+.result-info {
+  margin-bottom: var(--space-4);
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.result-info strong {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.result-info em {
+  color: var(--primary-light);
+  font-style: normal;
+}
+
+@media (max-width: 900px) {
+  .summary-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .summary-cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+  }
+  .summary-card {
+    padding: var(--space-4);
+  }
+  .summary-card-value { font-size: 30px; }
+  .summary-card-label { font-size: 11px; }
+  .result-info { font-size: 13px; margin-bottom: var(--space-3); }
+}

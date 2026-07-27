@@ -1,0 +1,82 @@
+.property-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.form-row {
+  display: grid;
+  gap: var(--space-4);
+}
+.form-row-1 { grid-template-columns: 1fr; }
+.form-row-2 { grid-template-columns: 1fr 1fr; }
+.form-row-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+.form-divider {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: var(--space-1) 0;
+}
+
+.form-divider::before,
+.form-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.form-divider span {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.form-textarea {
+  width: 100%;
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  padding: 10px 14px;
+  outline: none;
+  resize: vertical;
+  transition: var(--transition);
+  min-height: 80px;
+}
+
+.form-textarea::placeholder { color: var(--text-muted); }
+.form-textarea:focus {
+  border-color: var(--border-focus);
+  background: var(--bg-card);
+  box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+.form-footer {
+  padding-top: var(--space-2);
+  /* Extra bottom padding so submit button isn't hidden by phone keyboard/home bar */
+  padding-bottom: env(safe-area-inset-bottom, var(--space-4));
+}
+
+/* All multi-column rows collapse to 1 column on mobile */
+@media (max-width: 640px) {
+  .form-row-2,
+  .form-row-3 {
+    grid-template-columns: 1fr;
+  }
+  .property-form {
+    gap: var(--space-4);
+  }
+}
