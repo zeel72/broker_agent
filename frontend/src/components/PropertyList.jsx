@@ -4,6 +4,17 @@ import Button from './ui/Button';
 import './PropertyList.css';
 
 const TYPE_LABELS = {
+  // New Types
+  residential_plot:   { label: 'Res. Plot',          cls: 'badge-plot' },
+  commercial_plot:    { label: 'Comm. Plot',         cls: 'badge-plot' },
+  industrial_plot:    { label: 'Ind. Plot',          cls: 'badge-plot' },
+  agricultural_land:  { label: 'Agri. Land',         cls: 'badge-plot' },
+  residential_flat:   { label: 'Res. Flat',          cls: 'badge-flat_sale' },
+  commercial_office:  { label: 'Comm. Office',       cls: 'badge-flat_sale' },
+  shop:               { label: 'Shop',               cls: 'badge-flat_sale' },
+  villa:              { label: 'Villa/Bungalow',     cls: 'badge-house_rent' },
+  house:              { label: 'House',              cls: 'badge-house_rent' },
+  // Legacy
   plot:       { label: 'Plot',       cls: 'badge-plot' },
   flat_sale:  { label: 'Flat (Sale)',cls: 'badge-flat_sale' },
   house_rent: { label: 'Rent',       cls: 'badge-house_rent' },
@@ -49,6 +60,7 @@ const PropertyList = ({ properties, onEdit, onDelete, loading }) => {
               <th>Price / Rent</th>
               <th>Details</th>
               <th>Owner</th>
+              <th>Brokers</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
@@ -86,7 +98,7 @@ const PropertyList = ({ properties, onEdit, onDelete, loading }) => {
                     </div>
                   </td>
                   <td className="prop-details-cell">
-                    {p.type === 'plot' ? (
+                    {['plot', 'residential_plot', 'commercial_plot', 'industrial_plot', 'agricultural_land'].includes(p.type) ? (
                       <>
                         {d.size && <span className="detail-chip">{d.size}</span>}
                         {d.facing && <span className="detail-chip">{d.facing}</span>}
@@ -105,6 +117,22 @@ const PropertyList = ({ properties, onEdit, onDelete, loading }) => {
                     <a href={`tel:${p.owner_contact}`} className="prop-owner-contact">
                       <Phone size={12} /> {p.owner_contact}
                     </a>
+                  </td>
+                  <td>
+                    {p.brokers && p.brokers.length > 0 ? (
+                      <div className="prop-brokers-list">
+                        {p.brokers.map((b, i) => (
+                          <div key={i} style={{ marginBottom: '4px' }}>
+                            <div style={{ fontSize: '12px', fontWeight: '500' }}>{b.name}</div>
+                            <a href={`tel:${b.contact}`} style={{ fontSize: '11px', color: '#666', textDecoration: 'none' }}>
+                              <Phone size={10} /> {b.contact}
+                            </a>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <span style={{ fontSize: '12px', color: '#aaa' }}>-</span>
+                    )}
                   </td>
                   <td>
                     <span className={`badge ${STATUS_CLS[p.status] || ''}`}>{p.status}</span>
@@ -141,8 +169,17 @@ const PropertyList = ({ properties, onEdit, onDelete, loading }) => {
           const d = p.specific_details || {};
           const borderColors = {
             plot: 'var(--type-plot)',
+            residential_plot: 'var(--type-plot)',
+            commercial_plot: 'var(--type-plot)',
+            industrial_plot: 'var(--type-plot)',
+            agricultural_land: 'var(--type-plot)',
             flat_sale: 'var(--type-flat-sale)',
+            residential_flat: 'var(--type-flat-sale)',
+            commercial_office: 'var(--type-flat-sale)',
+            shop: 'var(--type-flat-sale)',
             house_rent: 'var(--type-house-rent)',
+            villa: 'var(--type-house-rent)',
+            house: 'var(--type-house-rent)',
           };
           return (
             <div
@@ -175,6 +212,19 @@ const PropertyList = ({ properties, onEdit, onDelete, loading }) => {
                   <Phone size={13} /> {p.owner_contact}
                 </a>
               </div>
+              {p.brokers && p.brokers.length > 0 && (
+                <div style={{ padding: '0 12px 10px', fontSize: '12px' }}>
+                  <div style={{ fontWeight: '600', marginBottom: '4px', color: '#555' }}>Brokers:</div>
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    {p.brokers.map((b, i) => (
+                      <div key={i} style={{ background: 'var(--surface)', padding: '4px 8px', borderRadius: '4px', border: '1px solid var(--border)' }}>
+                        <div style={{ fontWeight: '500' }}>{b.name}</div>
+                        <a href={`tel:${b.contact}`} style={{ color: '#666', textDecoration: 'none' }}>{b.contact}</a>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
               {p.notes && (
                 <div className="mobile-card-notes">📝 {p.notes}</div>
               )}

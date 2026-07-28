@@ -96,7 +96,12 @@ const DashboardPage = () => {
       const tableRows = [];
 
       filtered.forEach(p => {
-        const pType = p.type === 'plot' ? 'Plot' : p.type === 'flat_sale' ? 'Flat (Sale)' : 'Rent';
+        const typeLabels = {
+          residential_plot: 'Res. Plot', commercial_plot: 'Comm. Plot', industrial_plot: 'Ind. Plot', agricultural_land: 'Agri. Land',
+          residential_flat: 'Res. Flat', commercial_office: 'Comm. Office', shop: 'Shop', villa: 'Villa', house: 'House',
+          plot: 'Plot', flat_sale: 'Flat (Sale)', house_rent: 'Rent'
+        };
+        const pType = typeLabels[p.type] || p.type;
         const priceStr = p.price ? p.price.toLocaleString('en-IN') : 'N/A';
         const propertyData = [
           p.title || 'N/A',
@@ -142,13 +147,13 @@ const DashboardPage = () => {
           color="available"
         />
         <SummaryCard
-          label="Plots"
-          value={properties.filter((p) => p.type === 'plot').length}
+          label="Plots/Land"
+          value={properties.filter((p) => ['plot', 'residential_plot', 'commercial_plot', 'industrial_plot', 'agricultural_land'].includes(p.type)).length}
           color="plot"
         />
         <SummaryCard
-          label="For Rent"
-          value={properties.filter((p) => p.type === 'house_rent').length}
+          label="Built Properties"
+          value={properties.filter((p) => !['plot', 'residential_plot', 'commercial_plot', 'industrial_plot', 'agricultural_land'].includes(p.type)).length}
           color="rent"
         />
       </div>

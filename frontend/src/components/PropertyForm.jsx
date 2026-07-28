@@ -7,9 +7,20 @@ import toast from 'react-hot-toast';
 import './PropertyForm.css';
 
 const PROPERTY_TYPES = [
-  { value: 'plot',       label: '🌍 Plot (Land)' },
-  { value: 'flat_sale',  label: '🏢 Flat / House (For Sale)' },
-  { value: 'house_rent', label: '🏠 Flat / House (For Rent)' },
+  // New granular types
+  { value: 'residential_plot', label: '🌍 Residential Plot' },
+  { value: 'commercial_plot',  label: '🌍 Commercial Plot' },
+  { value: 'industrial_plot',  label: '🏭 Industrial Plot' },
+  { value: 'agricultural_land',label: '🌾 Agricultural Land' },
+  { value: 'residential_flat', label: '🏢 Residential Flat' },
+  { value: 'commercial_office',label: '🏢 Commercial Office' },
+  { value: 'shop',             label: '🏪 Shop / Showroom' },
+  { value: 'villa',            label: '🏠 Villa / Bungalow' },
+  { value: 'house',            label: '🏠 Independent House' },
+  // Legacy / General types
+  { value: 'plot',       label: '🌍 Plot (Generic)' },
+  { value: 'flat_sale',  label: '🏢 Flat / House (Sale)' },
+  { value: 'house_rent', label: '🏠 Flat / House (Rent)' },
 ];
 
 const STATUS_OPTIONS = [
@@ -48,6 +59,7 @@ const defaultForm = {
   status: 'Available',
   owner_name: '',
   owner_contact: '',
+  brokers: [],
   notes: '',
   // Plot-specific
   size: '',
@@ -83,6 +95,29 @@ const PropertyForm = ({ onSuccess, existingData }) => {
   const set = (field) => (e) =>
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
 
+  const handleBrokerChange = (index, field, value) => {
+    setForm((prev) => {
+      const newBrokers = [...(prev.brokers || [])];
+      newBrokers[index] = { ...newBrokers[index], [field]: value };
+      return { ...prev, brokers: newBrokers };
+    });
+  };
+
+  const addBroker = () => {
+    setForm((prev) => ({
+      ...prev,
+      brokers: [...(prev.brokers || []), { name: '', contact: '' }],
+    }));
+  };
+
+  const removeBrokerList = (index) => {
+    setForm((prev) => {
+      const newBrokers = [...(prev.brokers || [])];
+      newBrokers.splice(index, 1);
+      return { ...prev, brokers: newBrokers };
+    });
+  };
+
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files.length > 0) {
       setSelectedFiles(prev => [...prev, ...Array.from(e.target.files)]);
@@ -113,7 +148,9 @@ const PropertyForm = ({ onSuccess, existingData }) => {
 
     // Build specific_details
     let specific_details = {};
-    if (form.type === 'plot') {
+    const isPlotType = ['plot', 'residential_plot', 'commercial_plot', 'industrial_plot', 'agricultural_land'].includes(form.type);
+    
+    if (isPlotType) {
       specific_details = {
         size: form.size,
         facing: form.facing,
@@ -151,6 +188,7 @@ const PropertyForm = ({ onSuccess, existingData }) => {
       status: form.status,
       owner_name: form.owner_name,
       owner_contact: form.owner_contact,
+      brokers: form.brokers || [],
       notes: form.notes,
       specific_details,
       photos: uploadedPhotos,
@@ -172,7 +210,7 @@ const PropertyForm = ({ onSuccess, existingData }) => {
     }
   };
 
-  const isPlot = form.type === 'plot';
+  const isPlot = ['plot', 'residential_plot', 'commercial_plot', 'industrial_plot', 'agricultural_land'].includes(form.type);
 
   return (
     <form onSubmit={handleSubmit} className="property-form">
@@ -307,6 +345,51 @@ const PropertyForm = ({ onSuccess, existingData }) => {
           required
         />
       </div>
+
+      {/* Brokers Details */}
+      <div className="form-divider" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span>🤝 Brokers</span>
+        <Button type="button" size="sm" onClick={addBroker} style={{ padding: '4px 10px', fontSize: '12px' }}>
+          + Add Broker
+        </Button>
+      </div>
+      
+      {(form.brokers || []).length === 0 && (
+        <div style={{ fontSize: '13px', color: '#666', textAlign: 'center', marginBottom: '15px' }}>
+          No brokers added. Click '+ Add Broker' to add one.
+        </div>
+      )}
+
+      {(form.brokers || []).map((broker, index) => (
+        <div key={`broker-${index}`} style={{ border: '1px solid var(--border)', padding: '10px', borderRadius: '8px', marginBottom: '10px', position: 'relative' }}>
+          <button 
+            type="button" 
+            onClick={() => removeBrokerList(index)}
+            style={{ position: 'absolute', top: '10px', right: '10px', background: 'var(--danger)', color: 'white', border: 'none', borderRadius: '4px', padding: '2px 8px', cursor: 'pointer', fontSize: '12px' }}
+          >
+            Remove
+          </button>
+          <div style={{ fontSize: '12px', fontWeight: 'bold', color: 'var(--primary)', marginBottom: '8px' }}>Broker {index + 1}</div>
+          <div className="form-row form-row-2">
+            <Input
+              id={`broker-name-${index}`}
+              label="Broker Name"
+              placeholder="Full name"
+              value={broker.name}
+              onChange={(e) => handleBrokerChange(index, 'name', e.target.value)}
+              required
+            />
+            <Input
+              id={`broker-contact-${index}`}
+              label="Broker Contact"
+              placeholder="+91 98765 43210"
+              value={broker.contact}
+              onChange={(e) => handleBrokerChange(index, 'contact', e.target.value)}
+              required
+            />
+          </div>
+        </div>
+      ))}
 
       {/* Photos */}
       <div className="form-divider"><span>📷 Photos</span></div>

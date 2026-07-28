@@ -5,7 +5,11 @@ const propertySchema = mongoose.Schema(
     type: {
       type: String,
       required: true,
-      enum: ['plot', 'flat_sale', 'house_rent'],
+      enum: [
+        'plot', 'flat_sale', 'house_rent',
+        'residential_plot', 'industrial_plot', 'commercial_plot', 'agricultural_land',
+        'residential_flat', 'commercial_office', 'shop', 'villa', 'house'
+      ],
     },
     title: {
       type: String,
@@ -34,6 +38,12 @@ const propertySchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    brokers: [
+      {
+        name: { type: String, required: true },
+        contact: { type: String, required: true }
+      }
+    ],
     notes: {
       type: String,
       default: '',

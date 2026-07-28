@@ -86,9 +86,18 @@ const Layout = ({ children, onAddNew, onDownloadPDF, filters, onFilterChange, st
             onChange={(e) => onFilterChange('type', e.target.value)}
           >
             <option value="">All Types</option>
-            <option value="plot">Plot</option>
-            <option value="flat_sale">Flat (Sale)</option>
-            <option value="house_rent">House / Flat (Rent)</option>
+            <option value="residential_plot">Residential Plot</option>
+            <option value="commercial_plot">Commercial Plot</option>
+            <option value="industrial_plot">Industrial Plot</option>
+            <option value="agricultural_land">Agricultural Land</option>
+            <option value="residential_flat">Residential Flat</option>
+            <option value="commercial_office">Commercial Office</option>
+            <option value="shop">Shop / Showroom</option>
+            <option value="villa">Villa / Bungalow</option>
+            <option value="house">Independent House</option>
+            <option value="plot">Plot (Legacy)</option>
+            <option value="flat_sale">Flat Sale (Legacy)</option>
+            <option value="house_rent">House Rent (Legacy)</option>
           </select>
 
           {/* Status filter */}
